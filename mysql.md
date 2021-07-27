@@ -150,7 +150,8 @@ INSERT INTO destinationDB.tblName SELECT * FROM sourceDB.tblName;
 
 ```sql
 SELECT colName           -- mandatory
-FROM tblName           -- mandatory
+FROM tblName [AS short]           -- mandatory
+[JOIN tblName2 ON tblName.colName = tblName2.colName]
 [WHERE colName ~~~ ]
 [ORDER BY colName]
 [LIMIT int]
@@ -160,15 +161,56 @@ FROM tblName           -- mandatory
 #### SELECT: select which columns or calculated values to display
 
 - `SELECT *` : all columns
-- `SELECT colName1, colName2` : display values of only _colName1_ and _colName2_
-- `SELECT DISTINCT colName`: display all values of _colName_ after eliminating duplicates
-- `SELECT COUNT(*)` : display the total number of all records
+- `SELECT colName1, colName2` : return values of only _colName1_ and _colName2_
+- `SELECT DISTINCT colName`: return all values of _colName_ after eliminating duplicates
+- `SELECT COUNT(*)` : return the total number of all records
   - `SELECT COUNT(DISTINCT colName)` : number of rows with unique _colName_
-- `SELECT MAX(colName)` : display the maximum value of _colName_
-- `SELECT AVG(colName)` : display the average value of _colName_
+- `SELECT MAX(colName)` : return the maximum value of _colName_
+- `SELECT AVG(colName)` : return the average value of _colName_
 - `SELECT colName AS newColName` : rename _colName_ to _newColName_
   - `SELECT colName AS 'new Col Name'` : use single quotes if alias name contains spaces
 - `SELECT concat(colName1, ' ', colName2) AS combinedColName`: combine multiple columns into a single new column
+
+#### FROM : designate source table
+
+- `FROM fullTableName AS shortNm`: assign alias for table name
+  - `SELECT colName FROM fullTableName` 
+    => `SELECT shortNm.colName FROM fullTableName AS shortNm`
+
+#### JOIN : retrieve data from multiple tables
+
+```sql
+SELECT base.col, added.col, ...
+FROM baseTbl AS base
+[LEFT/RIGHT] JOIN addedTbl AS added
+ON base.col = added.col
+
+[WHERE ...]
+[ORDER BY ...]
+[...]
+```
+
+
+
+##### INNER JOIN (simple join) : intersection
+
+- `SELECT * FROM tbl1 JOIN tbl2 ON tbl1.col = tbl2.col`
+  - return intersecting records of `tbl1` and `tbl2`, where the `tbl1.col = tbl2.col` condition is met
+  - 한쪽 테이블에만 들어있거나 위 조건에 의해 매칭 안 되는 레코드는 생략됨
+  - `tbl1` columns appear first (on the left), then corresponding `tbl2` columns are append to the right
+
+##### LEFT/RIGHT JOIN : 
+
+- ```sql
+  SELECT ...
+  FROM baseTbl AS base
+  LEFT JOIN addedTbl AS added
+  ON ....
+  ```
+
+  - Return all rows from `baseTbl` + add corresponding rows from `addedTbl` even if there are null values
+
+- `FROM baseTbl LEFT JOIN addedTbl` == `FROM addedTbl RIGHT JOIN baseTbl`
 
 #### WHERE : set a specific condition for which records to select
 
@@ -198,4 +240,31 @@ FROM tblName           -- mandatory
 - `SELECT * FROM tblName GROUP BY colName;` : Select first occurring row from each distinct _colName_ group. (Total number of rows is equal to number of distinct _colName_ values)
 - `SELECT District, COUNT(*) AS 'Number of Cities' FROM cities GROUP BY District;`
   - Shows district list with total number of cities per 'district' group
+
+
+
+#### Return rows w/ max column value per group
+
+```sql
+SELECT * 
+FROM (
+	SELECT groupNm, MAX(colNm) as maxVal
+    FROM tblNm 
+    GROUP BY groupNm
+) AS m
+JOIN tblNm AS t
+ON t.groupNm = m.groupNm AND t.colNm = m.maxVal;
+```
+
+```sql
+SELECT *
+FROM tblNm
+WHERE colNm = (
+	SELECT MAX(colNm) 
+    FROM tblNm AS t
+    WHERE t.groupNm = tblNm.groupNm
+);
+```
+
+> In both cases, multiple rows (with same max column value) may be returned per group.
 
