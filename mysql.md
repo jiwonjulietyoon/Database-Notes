@@ -183,14 +183,14 @@ FROM tblName [AS short]           -- mandatory
 SELECT base.col, added.col, ...
 FROM baseTbl AS base
 [LEFT/RIGHT] JOIN addedTbl AS added
-ON base.col = added.col
+ON base.col = added.col || USING (commonCol)
 
 [WHERE ...]
 [ORDER BY ...]
 [...]
 ```
 
-
+- use `USING` instead of `ON` if the matched columns have identical names
 
 ##### INNER JOIN (simple join) : intersection
 
@@ -199,7 +199,7 @@ ON base.col = added.col
   - 한쪽 테이블에만 들어있거나 위 조건에 의해 매칭 안 되는 레코드는 생략됨
   - `tbl1` columns appear first (on the left), then corresponding `tbl2` columns are append to the right
 
-##### LEFT/RIGHT JOIN : 
+##### OUTER (LEFT/RIGHT) JOIN : 
 
 - ```sql
   SELECT ...
@@ -212,10 +212,15 @@ ON base.col = added.col
 
 - `FROM baseTbl LEFT JOIN addedTbl` == `FROM addedTbl RIGHT JOIN baseTbl`
 
+##### CROSS JOIN:
+
+- Return a paired combination of each row from the joined tables
+
 #### WHERE : set a specific condition for which records to select
 
 - `WHERE colName = value` : `=`, `==`, `is`, `>`, `<`, `>=`, `<=` may also be used
   - `!=`, `<>` means 'is not equal to'
+    - `IS NULL`, `IS NOT NULL`
 - `WHERE colName LIKE 'The %'` : display records whose colName starts with "The "
   - `%word` : ends with "word"
   - `%word%` : includes "word"
@@ -267,4 +272,47 @@ WHERE colNm = (
 ```
 
 > In both cases, multiple rows (with same max column value) may be returned per group.
+
+
+
+
+
+# UNION
+
+Combines the result sets of 2 or more `SEELCT` statements (duplicate rows are omitted)
+
+```sql
+(SELECT ... FROM ...)
+UNION
+(SELECT ... FROM ...)
+```
+
+
+
+# VIEWS
+
+Save the resulting table from an SQL statement. (Saved into `Views` within the same database) Other SQL statements can refer to this view in the same way as regular tables.
+
+```sql
+CREATE VIEW viewName AS
+SELECT ....
+FROM ....
+```
+
+```sql
+SELECT ... FROM viewName ...
+```
+
+
+
+# Check column data type
+
+```sql
+SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'tblName' AND COLUMN_NAME = 'colName'
+```
+
+
+
+
 
