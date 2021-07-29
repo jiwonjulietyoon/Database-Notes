@@ -307,6 +307,17 @@ SELECT ... FROM viewName ...
 
 # Check column data type
 
+#### Return column info of entire table
+
+```sql
+SELECT *
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'TblName'
+ORDER BY ORDINAL_POSITION;
+```
+
+#### Return data type of a specific column
+
 ```sql
 SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'tblName' AND COLUMN_NAME = 'colName'
