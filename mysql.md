@@ -21,8 +21,8 @@ Database > Connect to Database
 
 - Common
   - plural form
-  - use square brackets `[]` when:
-    - keywords, special characters, spaces are used in column names or identifiers
+  - use backticks ``  `...` `` when:
+    - keywords, some special characters (e.g. `.`), spaces are used in column names or identifiers
 - Tables
   - lowerCamelCase with `tbl` prefix (e.g `tblBooks`)
 - Views
@@ -112,7 +112,7 @@ ADD COLUMN colName DATATYPE;
 
 ```sql
 ALTER TABLE tblName
-ALTER COLUMN oldColName TO newColName;
+RENAME COLUMN oldColName TO newColName;
 ```
 
 ##### Change column data type
@@ -137,6 +137,8 @@ VALUES (value1, value2);
 ```
 
 - `(colName1, colName2)` may be omitted if it includes all available columns
+- single quotes around text or date values
+  - e.g) `'Jane Doe'`, `'2021-07-29'`
 
 ##### Update existing record
 
@@ -191,7 +193,7 @@ INSERT INTO destinationDB.tblName SELECT * FROM sourceDB.tblName;
 # SELECT (table)
 
 ```sql
-SELECT colName           -- mandatory
+SELECT colName [AS short]          -- mandatory
 FROM tblName [AS short]           -- mandatory
 [JOIN tblName2 ON tblName.colName = tblName2.colName]
 [WHERE colName ~~~ ]
@@ -204,6 +206,8 @@ FROM tblName [AS short]           -- mandatory
 
 - `SELECT *` : all columns
 - `SELECT colName1, colName2` : return values of only _colName1_ and _colName2_
+- `SELECT longColumnName AS shortNm` : Assign alias to column name
+  - `AS` may be omitted -> `SELECT longColumnName shortNm`
 - `SELECT DISTINCT colName`: return all values of _colName_ after eliminating duplicates
 - `SELECT COUNT(*)` : return the total number of all records
   - `SELECT COUNT(DISTINCT colName)` : number of rows with unique _colName_

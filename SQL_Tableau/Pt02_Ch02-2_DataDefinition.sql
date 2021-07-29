@@ -1,12 +1,16 @@
+/* MEMOS
+
 -- LINE COMMENT
 
 /*
 BLOCK COMMENT
 */
 
--- Highlight + F5 to run selected queries only
+[] Square brackets around table/column name when keywords, special characters, spaces are used
 
+Highlight + F5 to run selected queries only
 
+*/
 /* ______________________________________________________________________________ */
 
 
