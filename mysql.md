@@ -17,6 +17,17 @@ Database > Connect to Database
 
 ////
 
+#### Naming conventions
+
+- Common
+  - plural form
+  - use square brackets `[]` when:
+    - keywords, special characters, spaces are used in column names or identifiers
+- Tables
+  - lowerCamelCase with `tbl` prefix (e.g `tblBooks`)
+- Views
+  - UpperCamelCase with `vw_` prefix (e.g `vw_Books`)
+
 .
 
 # Database
@@ -83,11 +94,32 @@ CREATE TABLE tblName (
 
 #### Edit existing table
 
+##### Change table name
+
+```sql
+ALTER TABLE oldTblName
+RENAME TO newTBLName;
+```
+
  ##### Add column
 
 ```sqlite
 ALTER TABLE tblName
 ADD COLUMN colName DATATYPE;
+```
+
+##### Change column name
+
+```sql
+ALTER TABLE tblName
+ALTER COLUMN oldColName TO newColName;
+```
+
+##### Change column data type
+
+```sql
+ALTER TABLE tblName
+ALTER COLUMN colName NEW_DATATYPE;
 ```
 
 ##### Delete column
@@ -124,8 +156,18 @@ WHERE colName = value;     -- e.g) WHERE colName IS NULL
 #### Delete table
 
 ```sql
+TRUNCATE TABLE tblName;
+```
+
+> Empties table (delete all rows)
+>
+> - Drops entire table and recreates (rather than deleting row by row)
+
+```sql
 DROP TABLE tblName;
 ```
+
+> Deletes entire table
 
 #### Copy table from different database
 
@@ -312,7 +354,7 @@ SELECT ... FROM viewName ...
 ```sql
 SELECT *
 FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'TblName'
+WHERE TABLE_NAME = 'tblName'
 ORDER BY ORDINAL_POSITION;
 ```
 
