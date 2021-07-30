@@ -148,6 +148,8 @@ SET colName1 = newValue1, colName2 = newValue2
 WHERE colName = value;
 ```
 
+> To update columns of all records to a certain uniform value, omit the `WHERE` clause.
+
 ##### Delete record
 
 ```sqlite
@@ -159,6 +161,10 @@ WHERE colName = value;     -- e.g) WHERE colName IS NULL
 
 ```sql
 TRUNCATE TABLE tblName;
+```
+
+```sql
+DELETE FROM tblName;
 ```
 
 > Empties table (delete all rows)

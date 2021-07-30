@@ -21,3 +21,24 @@ INSERT INTO  [회원테이블]  VALUES ('A10002', '김영화', '여', 29, 200000, '2020-0
 INSERT INTO  [회원테이블]  VALUES ('A10003', '홍길동', '남', 29, 300000, '2020-01-03', NULL);
 
 
+/* Return all rows from table */
+SELECT * FROM [회원테이블];
+
+
+/* Assign alias to column */
+SELECT [이름] AS [성명]   -- `AS` may be omitted 
+FROM [회원테이블];
+
+
+/* Update column value */
+UPDATE [회원테이블]
+SET [나이] = 34
+WHERE [회원번호] = 'A10001';  -- Omit `WHERE` clause to update column values of all rows
+
+
+/* Delete row */
+DELETE FROM [회원테이블]
+WHERE [회원번호] = 'A10001';
+
+
+

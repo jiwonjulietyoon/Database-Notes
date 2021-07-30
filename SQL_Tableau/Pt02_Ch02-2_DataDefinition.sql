@@ -52,6 +52,8 @@ SP_RENAME '[회원테이블].[몸무게]', '몸무게(kg)';
 
 /* Empty table (delete all rows) */
 TRUNCATE TABLE [MEMBER];
+-- OR
+DELETE FROM [회원테이블];
 
 
 /* Delete entire table */
