@@ -189,8 +189,23 @@ INSERT INTO destinationDB.tblName SELECT * FROM sourceDB.tblName;
 > Database name may be omitted if copying within same database
 
 
+#### Check column data type
 
+##### Return column info of entire table
 
+```sql
+SELECT *
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'tblName'
+ORDER BY ORDINAL_POSITION;
+```
+
+##### Return data type of a specific column
+
+```sql
+SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'tblName' AND COLUMN_NAME = 'colName'
+```
 
 
 
@@ -331,7 +346,7 @@ WHERE colNm = (
 
 # UNION
 
-Combines the result sets of 2 or more `SEELCT` statements (duplicate rows are omitted)
+Combines the result sets of 2 or more `SELECT` statements (duplicate rows are omitted)
 
 ```sql
 (SELECT ... FROM ...)
@@ -357,25 +372,26 @@ SELECT ... FROM viewName ...
 
 
 
-# Check column data type
 
-#### Return column info of entire table
 
-```sql
-SELECT *
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'tblName'
-ORDER BY ORDINAL_POSITION;
-```
+# Privileges
 
-#### Return data type of a specific column
+#### Grant privilege
 
 ```sql
-SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'tblName' AND COLUMN_NAME = 'colName'
+GRANT [SELECT, INSERT, UPDATE, DELETE]
+ON tblName
+TO userName
+[WITH GRANT OPTION];  -- allows user to give other users any privileges the user has
 ```
 
+#### Revoke privilege
 
+```sql
+REVOKE [SELECT, INSERT, UPDATE, DELETE]
+ON tblName
+TO userName;
+```
 
 
 
