@@ -218,10 +218,15 @@ SELECT colName [AS short]          -- mandatory
 FROM tblName [AS short]           -- mandatory
 [JOIN tblName2 ON tblName.colName = tblName2.colName]
 [WHERE colName ~~~ ]
+[GROUP BY colName]
+[HAVING colName ~~~]
 [ORDER BY colName]
 [LIMIT int]
 ;
 ```
+
+> **[문법 순서]** SELECT -> FROM -> WHERE -> GROUP BY -> HAVING -> ORDER BY -> LIMIT
+> **[실행 순서]** FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT
 
 #### SELECT: select which columns or calculated values to display
 
@@ -309,11 +314,23 @@ ON base.col = added.col || USING (commonCol)
 
 #### GROUP BY
 
-- `SELECT * FROM tblName GROUP BY colName;` : Select first occurring row from each distinct _colName_ group. (Total number of rows is equal to number of distinct _colName_ values)
+- `SELECT * FROM tblName GROUP BY colName;` : Select first occurring row (or, may be a random selection) from each distinct _colName_ group. (Total number of rows is equal to number of distinct _colName_ values)
+  - Although MySQL will not raise an error, selecting columns that are neither contained in an aggregate function nor the GROUP BY clause is essentially meaningless, as MySQL will return random values from each group.
 - `SELECT District, COUNT(*) AS 'Number of Cities' FROM cities GROUP BY District;`
   - Shows district list with total number of cities per 'district' group
 
+#### HAVING
 
+- Filters the results of the `GROUP BY` clause
+  (similar to the `WHERE` clause, except `WHERE` filters the entire table prior to being grouped)
+
+  ```sql
+  SELECT col1, col2, COUNT(*) FROM tblName
+  GROUP BY col1, col2
+  HAVING COUNT(*) > 10;
+  ```
+
+  
 
 #### Return rows w/ max column value per group
 
@@ -407,3 +424,4 @@ TO userName;
 > - If at least one modification fails => Transaction is rolled back and all modifications are undone
 
 (In progress..)
+
