@@ -395,3 +395,15 @@ TO userName;
 
 
 
+
+
+# Transaction
+
+> A sequential group of statements to perform as a single work unit that can be committed or rolled back.
+>
+> If the transaction makes multiple modifications into the database:
+>
+> - If all modifications are successful => Transaction is committed
+> - If at least one modification fails => Transaction is rolled back and all modifications are undone
+
+(In progress..)
