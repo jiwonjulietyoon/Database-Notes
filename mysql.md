@@ -262,14 +262,15 @@ ON base.col = added.col || USING (commonCol)
 [...]
 ```
 
-- use `USING` instead of `ON` if the matched columns have identical names
+> Resulting table will place `baseTbl` columns on the left, and then append corresponding `addedTbl` columns on the right
+
+> May use `USING` instead of `ON` if the matched columns have identical names. But `USING` will place the mentioned column(s) only once at the very left of the resulting table, rather than once for each table in the respective original order.
 
 ##### INNER JOIN (simple join) : intersection
 
 - `SELECT * FROM tbl1 JOIN tbl2 ON tbl1.col = tbl2.col`
   - return intersecting records of `tbl1` and `tbl2`, where the `tbl1.col = tbl2.col` condition is met
   - 한쪽 테이블에만 들어있거나 위 조건에 의해 매칭 안 되는 레코드는 생략됨
-  - `tbl1` columns appear first (on the left), then corresponding `tbl2` columns are append to the right
 
 ##### OUTER (LEFT/RIGHT) JOIN : 
 
@@ -286,7 +287,14 @@ ON base.col = added.col || USING (commonCol)
 
 ##### CROSS JOIN:
 
-- Return a paired combination of each row from the joined tables
+- Return a paired combination of each row from the joined tables (when no `WHERE` clause is used)
+- `ON` clause cannot be used
+
+##### Self JOIN:
+
+
+
+
 
 #### WHERE : set a specific condition for which records to select
 
@@ -332,32 +340,57 @@ ON base.col = added.col || USING (commonCol)
 
   
 
-#### Return rows w/ max column value per group
+#### Subqueries
 
-```sql
-SELECT * 
-FROM (
-	SELECT groupNm, MAX(colNm) as maxVal
-    FROM tblNm 
-    GROUP BY groupNm
-) AS m
-JOIN tblNm AS t
-ON t.groupNm = m.groupNm AND t.colNm = m.maxVal;
-```
+- Usually nested within `SELECT`, `FROM`, `WHERE`
 
-```sql
-SELECT *
-FROM tblNm
-WHERE colNm = (
-	SELECT MAX(colNm) 
-    FROM tblNm AS t
-    WHERE t.groupNm = tblNm.groupNm
-);
-```
+##### Within `SELECT`
 
-> In both cases, multiple rows (with same max column value) may be returned per group.
+- Used like a _column_
 
+- Not really used since it virtually has the same effect as a `JOIN` clause
 
+  ```sql
+  SELECT *
+  	, (SELECT colName
+          FROM addedTbl AS added
+          WHERE base.matchingCol = added.matchingCol) AS colName
+  FROM baseTbl AS base
+  ```
+
+##### Within `FROM`
+
+- Used like a _table_ ("inline view subquery")
+
+- Ex) Return rows w/ max column value per group
+
+  ```sql
+  SELECT * 
+  FROM (
+  	SELECT groupNm, MAX(colNm) as maxVal
+      FROM tblNm 
+      GROUP BY groupNm
+  ) AS m
+  JOIN tblNm AS t
+  ON t.groupNm = m.groupNm AND t.colNm = m.maxVal;
+  ```
+  - Multiple rows (with same max column value) may be returned per group
+
+##### Within `WHERE`
+
+- Ex) Return rows w/ max column value per group
+
+  ```sql
+  SELECT *
+  FROM tblNm
+  WHERE colNm = (
+  	SELECT MAX(colNm) 
+      FROM tblNm AS t
+      WHERE t.groupNm = tblNm.groupNm
+  );
+  ```
+
+  - Multiple rows (with same max column value) may be returned per group
 
 
 
