@@ -15,7 +15,56 @@ SELECT User FROM user;
 
 Database > Connect to Database
 
-////
+
+
+#### MySQL Workbench Import Data -> LOAD DATA LOCAL INFILE
+
+> Let's not use Table Data Import Wizard -- too slow
+
+1. On MySQL Command Line Client,
+
+   ```sql
+   mysql> SHOW GLOBAL VARIABLES LIKE 'local_infile';
+   
+     +---------------+-------+ 
+     | Variable_name | Value |
+     +---------------+-------+
+     | local_infile  | OFF   |
+     +---------------+-------+
+     1 row in set (0.00 sec)
+   ```
+
+   ```sql
+   mysql> SET GLOBAL local_infile=1;
+   
+   -- will result in:
+     +---------------+-------+ 
+     | Variable_name | Value |
+     +---------------+-------+
+     | local_infile  | ON    |
+     +---------------+-------+
+     1 row in set (0.00 sec)
+   ```
+
+2. Edit MySQL Workbench Config file (`my.cnf`, `my.ini` etc.) via Git Bash
+
+   - e.g) `/C/ProgramData/MySQL/MySQL Server 8.0/my.ini`
+   - Under the `[client]` section, add line `loose-local-infile=1`
+   - Under the `[mysqld]` section, add line `local_infile=1`
+
+3. Restart MySQL Workbench
+
+4. `CREATE TABLE` based on whatever table needs to be imported
+
+5. ```sql
+   LOAD DATA LOCAL INFILE '/~~~/data.csv'  -- use '/', not '\'
+   INTO TABLE tableName
+   FIELDS TERMINATED BY ','  -- for csv files
+   LINES TERMINATED BY '\n'
+   IGNORE 1 ROWS;   -- first row in csv file = column names
+   ```
+
+
 
 #### Naming conventions
 
@@ -309,6 +358,14 @@ ON base.col = added.col || USING (commonCol)
 - `WHERE colName1 = value1 AND colName2 = value2`: set multiple conditions with `AND` or `OR`
 - `WHERE colName >= (SELECT AVG(colName) FROM tblName)`: select rows with column values greater than the average
 - `WHERE colName IN ('value1', 'value2')` : select rows with columns with multiple possible values
+
+#### ** Operators
+
+비교연산자
+
+
+
+
 
 #### ORDER BY : sort selected records by specified columns
 
