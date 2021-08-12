@@ -66,6 +66,10 @@ Database > Connect to Database
 
 
 
+#### Show warnings
+
+`SHOW WARNINGS;` after a query with warning/s
+
 #### Naming conventions
 
 - Common
@@ -361,7 +365,8 @@ ON base.col = added.col || USING (commonCol)
 
 #### ** Operators
 
-비교연산자
+- `IFNULL(colName, 'Replacement')` : Return values as-is only if it's not NULL, else return 2nd argument
+- 
 
 
 
@@ -460,6 +465,104 @@ Combines the result sets of 2 or more `SELECT` statements (duplicate rows are om
 UNION
 (SELECT ... FROM ...)
 ```
+
+
+
+# WITH RECURSIVE
+
+```sql
+WITH RECURSIVE hours(h)
+AS (
+    SELECT 0       # Start with hours =  [0]
+    UNION ALL
+    SELECT h + 1   # 
+    FROM hours
+    WHERE h < 3    # Until h + 1 
+)
+SELECT h AS HOUR, COUNT(B.DATETIME) AS COUNT
+FROM hours
+LEFT JOIN tblName AS B
+ON h = HOUR(B.DATETIME)
+GROUP BY h
+ORDER BY h;
+
+----------------------
+# | HOUR | COUNT |
+# | 0    | 0     |
+# | 1    | 0     |
+# | 2    | 0     |
+# | 3    | 0     |
+```
+
+
+
+# User-Defined Variables ( `SET`)
+
+#### Setting a variable
+
+```sql
+SET @varName := ~~~;
+SET @varName = ~~~;
+```
+
+- `:=` is preferred; `=` is a comparison operator in other statements
+- Possible data types: integer, decimal, floating-point, binary or nonbinary string, or `NULL`
+  - Assignment of decimal and real values does not preserve the precision or scale of the value
+
+#### Read variable
+
+```sql
+SELECT @varName;
+```
+
+#### Refer to variable
+
+```sql
+# example
+SELECT * FROM tblName
+WHERE colName = @varName;
+```
+
+#### Ex) Use within `SELECT`
+
+```sql
+SET @hour = -1;
+SELECT @hour := @hour + 1 AS HOUR, (
+    SELECT COUNT(DATETIME)
+    FROM tblName
+    WHERE @hour = HOUR(DATETIME)    
+    ) AS COUNT
+FROM tblName
+WHERE @hour < 23
+ORDER BY @hour;
+
+-- slower than using 'with recursive'
+```
+
+
+
+# CASE WHEN ... ELSE
+
+```sql
+SELECT col1, col2,
+	CASE WHEN col2 > 5 THEN 'col2 > 5'
+	WHEN col2 = 5 THEN 'col2 = 5'
+	ELSE 'col2 < 5'
+	END AS Explanation
+FROM tblName
+
+# +------+------+-------------+
+# | col1 | col2 | Explanation |
+# +------+------+-------------+
+# | ABC  |  10  | col 2 > 5   |
+# | XYZ  |   5  | col 2 = 5   |
+# | PQR  |   4  | col 2 < 5   |
+# +------+------+-------------+
+```
+
+
+
+
 
 
 
