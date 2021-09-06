@@ -56,7 +56,10 @@ Database > Connect to Database
 
 4. `CREATE TABLE` based on whatever table needs to be imported
 
-5. ```sql
+5. MySQL Workbench (8.0 and up) - Connect to Database (Ctrl+U) - 'Advanced' Tab - 'Others' box -
+   add `OPT_LOCAL_INFILE=1`
+
+6. ```sql
    LOAD DATA LOCAL INFILE '/~~~/data.csv'  -- use '/', not '\'
    INTO TABLE tableName
    FIELDS TERMINATED BY ','  -- for csv files
